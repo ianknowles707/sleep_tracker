@@ -31,7 +31,7 @@ class SleepQualityViewModel(
     //Navigation variables. Set by the viewmodel and observed by the Fragment. In this
     //case they can be Boolean as we do not need to pass any data back, just know
     //when to action the navigation
-    val _navigateToSleepTracker = MutableLiveData<Boolean?>()
+    private val _navigateToSleepTracker = MutableLiveData<Boolean?>()
 
     val navigateToSleepTracker: LiveData<Boolean?>
         get() = _navigateToSleepTracker

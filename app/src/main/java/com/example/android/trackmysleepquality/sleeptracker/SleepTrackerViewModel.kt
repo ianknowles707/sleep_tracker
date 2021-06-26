@@ -21,7 +21,6 @@ import androidx.lifecycle.*
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import com.example.android.trackmysleepquality.database.SleepNight
 import com.example.android.trackmysleepquality.formatNights
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
