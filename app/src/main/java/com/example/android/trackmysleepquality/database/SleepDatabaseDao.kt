@@ -28,29 +28,29 @@ interface SleepDatabaseDao {
 
     //Default actions are already provided - Insert is one of them
     @Insert
-    fun insert(night: SleepNight)
+    suspend fun insert(night: SleepNight)
 
     @Update
-    fun update(night: SleepNight)
+    suspend fun update(night: SleepNight)
 
     //For everything else the Query function is required. Note that at first use the
     //table may be empty so this must return a nullable
     @Query("SELECT * FROM daily_sleep_quality_table WHERE nightId = :key")
-    fun get(key: Long): SleepNight?
+    suspend fun get(key: Long): SleepNight?
 
     //Delete is provided which deletes a single row. There are ways to use this to clear
     //the table but we would need to know something about the table itself. WIth no knowledge
     //of the contents we can run a Query action which deletes all rows
     @Query("DELETE FROM daily_sleep_quality_table")
-    fun clear()
+    suspend fun clear()
 
     //Room can return the results as LiveData. We can then se ta b observer on the data
     //and update the UI when date changes
     @Query("SELECT * FROM daily_sleep_quality_table ORDER BY nightId DESC")
-    fun getAllNights(): LiveData<List<SleepNight>>
+    suspend fun getAllNights(): LiveData<List<SleepNight>>
 
     //LIMIT is used to restrict number of rows returned, here we just want the last one. Again
     //needs to be nullable for first use
     @Query("SELECT * FROM daily_sleep_quality_table ORDER BY nightId DESC LIMIT 1")
-    fun getTonight(): SleepNight?
+    suspend fun getTonight(): SleepNight?
 }

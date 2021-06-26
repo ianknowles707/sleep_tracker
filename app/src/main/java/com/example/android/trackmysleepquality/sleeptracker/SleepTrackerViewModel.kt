@@ -49,8 +49,8 @@ class SleepTrackerViewModel(
 
     private fun initializeTonight() {
 
-        viewModelScope.launch(Dispatchers.IO) {
-            tonight.postValue(getTonightFromDatabase())
+        viewModelScope.launch {
+            tonight.value = getTonightFromDatabase()
 
         }
     }
@@ -65,10 +65,10 @@ class SleepTrackerViewModel(
     }
 
     fun onStartTracking() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val newNight = SleepNight()
             insertNight(newNight)
-            tonight.postValue(getTonightFromDatabase())
+            tonight.value = getTonightFromDatabase()
         }
     }
 
@@ -77,7 +77,7 @@ class SleepTrackerViewModel(
     }
 
     fun onStopTracking() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val oldNight = tonight.value ?: return@launch
             oldNight.endTimeMillie = System.currentTimeMillis()
             updateNight(oldNight)
@@ -89,7 +89,7 @@ class SleepTrackerViewModel(
     }
 
     fun onClear() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             clearNights()
         }
     }
