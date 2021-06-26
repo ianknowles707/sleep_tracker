@@ -47,7 +47,7 @@ interface SleepDatabaseDao {
     //Room can return the results as LiveData. We can then se ta b observer on the data
     //and update the UI when date changes
     @Query("SELECT * FROM daily_sleep_quality_table ORDER BY nightId DESC")
-    suspend fun getAllNights(): LiveData<List<SleepNight>>
+    fun getAllNights(): LiveData<List<SleepNight>>
 
     //LIMIT is used to restrict number of rows returned, here we just want the last one. Again
     //needs to be nullable for first use

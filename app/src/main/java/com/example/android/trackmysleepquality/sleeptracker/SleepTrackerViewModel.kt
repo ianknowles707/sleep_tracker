@@ -17,10 +17,7 @@
 package com.example.android.trackmysleepquality.sleeptracker
 
 import android.app.Application
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import com.example.android.trackmysleepquality.database.SleepNight
 import com.example.android.trackmysleepquality.formatNights
@@ -42,6 +39,15 @@ class SleepTrackerViewModel(
     val nightString = Transformations.map(nights) { nights ->
         formatNights(nights, application.resources)
     }
+
+    //Variable to be used for navigation. The value is set by the viewmodel and
+    //observed in teh Fragment. It is of type SleepNight so we can use the current
+    //value to pass in the key of the current night, which can then be passed
+    //using safe args to the quality fragment where it can be updated
+    private val _navigateToSleepQuality = MutableLiveData<SleepNight>()
+
+    val navigateToSleepQuality: LiveData<SleepNight>
+        get() = _navigateToSleepQuality
 
     init {
         initializeTonight()
@@ -81,6 +87,9 @@ class SleepTrackerViewModel(
             val oldNight = tonight.value ?: return@launch
             oldNight.endTimeMillie = System.currentTimeMillis()
             updateNight(oldNight)
+            //Set the navigation variable to be the valuie of tha last night
+            //so we can use the key in the safe args call
+            _navigateToSleepQuality.value = oldNight
         }
     }
 
@@ -96,6 +105,11 @@ class SleepTrackerViewModel(
 
     private suspend fun clearNights() {
         database.clear()
+    }
+
+    //Set value to null to indicate we are finished with the navigation
+    fun doneNavigating() {
+        _navigateToSleepQuality.value = null
     }
 }
 

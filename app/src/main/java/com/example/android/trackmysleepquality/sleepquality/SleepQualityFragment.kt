@@ -22,7 +22,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.android.trackmysleepquality.R
+import com.example.android.trackmysleepquality.database.SleepDatabase
 import com.example.android.trackmysleepquality.databinding.FragmentSleepQualityBinding
 
 /**
@@ -46,6 +50,30 @@ class SleepQualityFragment : Fragment() {
                 inflater, R.layout.fragment_sleep_quality, container, false)
 
         val application = requireNotNull(this.activity).application
+
+        //Get the value passed from the SleepTrackerFragment in Safe Args
+        val arguments = SleepQualityFragmentArgs.fromBundle(arguments!!)
+
+        //Get the database access
+        val dataSource = SleepDatabase.getInstance(application).sleepDatabaseDao
+
+        //Create a factory for the ViewModel
+        val viewModelFactory=SleepQualityViewModelFactory(arguments.sleepNightKey,dataSource)
+
+        //Finally, create the ViewModel
+        val sleepQualityViewModel=ViewModelProvider(this,
+        viewModelFactory).get(SleepQualityViewModel::class.java)
+
+        binding.sleepQualityViewModel=sleepQualityViewModel
+
+        //Observe the navigation variable (simple Boolean) to see when to action the
+        //navigation back to the tracking Fragment
+        sleepQualityViewModel.navigateToSleepTracker.observe(viewLifecycleOwner, Observer {
+            if(it==true){
+                this.findNavController().navigate(SleepQualityFragmentDirections.actionSleepQualityFragmentToSleepTrackerFragment())
+                sleepQualityViewModel.doneNavigating()
+            }
+        })
 
         return binding.root
     }
