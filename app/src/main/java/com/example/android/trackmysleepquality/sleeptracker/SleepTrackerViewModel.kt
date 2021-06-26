@@ -24,6 +24,7 @@ import androidx.lifecycle.Transformations
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import com.example.android.trackmysleepquality.database.SleepNight
 import com.example.android.trackmysleepquality.formatNights
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -48,8 +49,8 @@ class SleepTrackerViewModel(
 
     private fun initializeTonight() {
 
-        viewModelScope.launch {
-            tonight.value = getTonightFromDatabase()
+        viewModelScope.launch(Dispatchers.IO) {
+            tonight.postValue(getTonightFromDatabase())
 
         }
     }
@@ -64,10 +65,10 @@ class SleepTrackerViewModel(
     }
 
     fun onStartTracking() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val newNight = SleepNight()
             insertNight(newNight)
-            tonight.value = getTonightFromDatabase()
+            tonight.postValue(getTonightFromDatabase())
         }
     }
 
@@ -76,7 +77,7 @@ class SleepTrackerViewModel(
     }
 
     fun onStopTracking() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val oldNight = tonight.value ?: return@launch
             oldNight.endTimeMillie = System.currentTimeMillis()
             updateNight(oldNight)
@@ -88,7 +89,7 @@ class SleepTrackerViewModel(
     }
 
     fun onClear() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             clearNights()
         }
     }
