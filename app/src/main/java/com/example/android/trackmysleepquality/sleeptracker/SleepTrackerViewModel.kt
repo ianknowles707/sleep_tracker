@@ -48,6 +48,29 @@ class SleepTrackerViewModel(
     val navigateToSleepQuality: LiveData<SleepNight>
         get() = _navigateToSleepQuality
 
+    //Here we set the buttons to be visible or not depending on the data. First
+    //if the tonight variable is null, then start button visible is true. This is set
+    //in the XML using the enabled attribute linked to the value of this variable
+    val startButtonVisible = Transformations.map(tonight) {
+        null == it
+    }
+
+    //Stop button is visible if there is a tonight value (i.e. the start button has
+    // been clicked)
+    val stopButtonVisible = Transformations.map(tonight) {
+        null != it
+    }
+
+    //clear is visible if there is data in the nights variable
+    val clearButtonVisible = Transformations.map(nights) {
+        it?.isNotEmpty()
+    }
+
+    private var _showSnackBarMessage = MutableLiveData<Boolean>()
+
+    val showSnackBarMessage: LiveData<Boolean>
+        get() = _showSnackBarMessage
+
     init {
         initializeTonight()
     }
@@ -100,6 +123,7 @@ class SleepTrackerViewModel(
         viewModelScope.launch {
             clearNights()
         }
+        _showSnackBarMessage.value = true
     }
 
     private suspend fun clearNights() {
@@ -109,6 +133,10 @@ class SleepTrackerViewModel(
     //Set value to null to indicate we are finished with the navigation
     fun doneNavigating() {
         _navigateToSleepQuality.value = null
+    }
+
+    fun doneShowingSnackBar() {
+        _showSnackBarMessage.value = false
     }
 }
 
