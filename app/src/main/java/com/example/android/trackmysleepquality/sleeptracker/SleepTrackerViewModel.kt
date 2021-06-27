@@ -20,8 +20,8 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import com.example.android.trackmysleepquality.database.SleepNight
-import com.example.android.trackmysleepquality.formatNights
 import kotlinx.coroutines.launch
+import com.example.android.trackmysleepquality.formatNights
 
 /**
  * ViewModel for SleepTrackerFragment.
@@ -66,10 +66,11 @@ class SleepTrackerViewModel(
         it?.isNotEmpty()
     }
 
-    private var _showSnackBarMessage = MutableLiveData<Boolean>()
+    private var _showSnackBarEvent = MutableLiveData<Boolean>()
 
-    val showSnackBarMessage: LiveData<Boolean>
-        get() = _showSnackBarMessage
+    val showSnackBarEvent: LiveData<Boolean>
+        get() = _showSnackBarEvent
+
 
     init {
         initializeTonight()
@@ -123,7 +124,7 @@ class SleepTrackerViewModel(
         viewModelScope.launch {
             clearNights()
         }
-        _showSnackBarMessage.value = true
+        _showSnackBarEvent.value = true
     }
 
     private suspend fun clearNights() {
@@ -136,7 +137,7 @@ class SleepTrackerViewModel(
     }
 
     fun doneShowingSnackBar() {
-        _showSnackBarMessage.value = false
+        _showSnackBarEvent.value = false
     }
 }
 

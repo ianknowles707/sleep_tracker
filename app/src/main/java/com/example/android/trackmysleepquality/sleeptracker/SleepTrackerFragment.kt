@@ -79,10 +79,10 @@ class SleepTrackerFragment : Fragment() {
         })
 
         //Set observer to decide whether to show the snackBar Message
-        sleepTrackerViewModel.showSnackBarMessage.observe(viewLifecycleOwner, Observer {
+        sleepTrackerViewModel.showSnackBarEvent.observe(viewLifecycleOwner, Observer {
             if (it == true) {
                 Snackbar.make(
-                    requireActivity().findViewById(android.R.id.content),
+                    binding.root,
                     getString(R.string.cleared_message),
                     Snackbar.LENGTH_SHORT
                 ).show()
